@@ -28,7 +28,7 @@ Start minimized
 Specify data directory
 .TP
 \fB\-proxy=\fR<ip:port>
-Connect through SOCKS5 proxy
+Connect through socks4 proxy
 .TP
 \fB\-addnode=\fR<ip>
 Add a node to connect to
@@ -62,6 +62,20 @@ Allow JSON\-RPC connections from specified IP address
 .TP
 \fB\-rpcconnect=\fR<ip>
 Send commands to node running on <ip>
+.PP
+SSL options: (see the Bitcoin Wiki for SSL setup instructions)
+.TP
+\fB\-rpcssl\fR=\fI1\fR
+Use OpenSSL (https) for JSON\-RPC connections
+.TP
+\fB\-rpcsslcertificatchainfile=\fR<file.cert>
+Server certificate file (default: server.cert)
+.TP
+\fB\-rpcsslprivatekeyfile=\fR<file.pem>
+Server private key (default: server.pem)
+.TP
+\fB\-rpcsslciphers=\fR<ciphers>
+Acceptable ciphers (default: TLSv1+HIGH:\:!SSLv2:\:!aNULL:\:!eNULL:\:!AH:\:!3DES:\:@STRENGTH)
 .TP
 \-?
 This help message
@@ -71,19 +85,19 @@ This help message
 Safely copies *wallet.dat* to 'destination', which can be a directory or a path with filename.
 .TP
 \fBgetaccount 'bitcoinaddress'\fR
-DEPRECATED. Returns the account associated with the given address.
+Returns the account associated with the given address.
 .TP
 \fBsetaccount 'bitcoinaddress' ['account']\fR
-DEPRECATED. Sets the ['account'] associated with the given address. ['account'] may be omitted to remove an address from ['account'].
+Sets the ['account'] associated with the given address. ['account'] may be omitted to remove an address from ['account'].
 .TP
 \fBgetaccountaddress 'account'\fR
-DEPRECATED. Returns a new bitcoin address for 'account'.
+Returns a new bitcoin address for 'account'.
 .TP
 \fBgetaddressesbyaccount 'account'\fR
-DEPRECATED. Returns the list of addresses associated with the given 'account'.
+Returns the list of addresses associated with the given 'account'.
 .TP
 \fBgetbalance 'account'\fR
-Returns the server's available balance, or the balance for 'account' (accounts are deprecated).
+Returns the server's available balance, or the balance for 'account'.
 .TP
 \fBgetblockcount\fR
 Returns the number of blocks in the longest block chain.
@@ -110,10 +124,10 @@ Returns a recent hashes per second performance measurement while generating.
 Returns an object containing server information.
 .TP
 \fBgetnewaddress 'account'\fR
-Returns a new bitcoin address for receiving payments. If 'account' is specified (deprecated), it is added to the address book so payments received with the address will be credited to 'account'.
+Returns a new bitcoin address for receiving payments. If 'account' is specified (recommended), it is added to the address book so payments received with the address will be credited to 'account'.
 .TP
 \fBgetreceivedbyaccount 'account' ['minconf=1']\fR
-DEPRECATED. Returns the total amount received by addresses associated with 'account' in transactions with at least ['minconf'] confirmations.
+Returns the total amount received by addresses associated with 'account' in transactions with at least ['minconf'] confirmations.
 .TP
 \fBgetreceivedbyaddress 'bitcoinaddress' ['minconf=1']\fR
 Returns the total amount received by 'bitcoinaddress' in transactions with at least ['minconf'] confirmations.
@@ -133,13 +147,13 @@ If 'data' is specified, tries to solve the block and returns true if it was succ
 List commands, or get help for a command.
 .TP
 \fBlistaccounts ['minconf=1']\fR
-DEPRECATED. List accounts and their current balances.
+List accounts and their current balances.
      *note: requires bitcoin 0.3.20 or later.
 .TP
 \fBlistreceivedbyaccount ['minconf=1'] ['includeempty=false']\fR
 ['minconf'] is the minimum number of confirmations before payments are included. ['includeempty'] whether to include addresses that haven't received any payments. Returns an array of objects containing:
 
-    "account"       : DEPRECATED. the account of the receiving address.
+    "account"       : the account of the receiving address.
     "amount"        : total amount received by the address.
     "confirmations" : number of confirmations of the most recent transaction included.
 .TP
@@ -147,7 +161,7 @@ DEPRECATED. List accounts and their current balances.
 ['minconf'] is the minimum number of confirmations before payments are included. ['includeempty'] whether to include addresses that haven't received any payments. Returns an array of objects containing:
 
     "address"       : receiving address.
-    "account"       : DEPRECATED. the account of the receiving address.
+    "account"       : the account of the receiving address.
     "amount"        : total amount received by the address.
     "confirmations" : number of confirmations of the most recent transaction included.
 .TP
@@ -166,10 +180,10 @@ Returns a list of the last ['count'] transactions for 'account' \- for all accou
     *note: requires bitcoin 0.3.20 or later.
 .TP
 \fBmove <'fromaccount'> <'toaccount'> <'amount'> ['minconf=1'] ['comment']\fR
-DEPRECATED. Moves funds between accounts.
+Moves funds between accounts.
 .TP
 \fBsendfrom* <'account'> <'bitcoinaddress'> <'amount'> ['minconf=1'] ['comment'] ['comment-to']\fR
-DEPRECATED. Sends amount from account's balance to 'bitcoinaddress'. This method will fail if there is less than amount bitcoins with ['minconf'] confirmations in the account's balance (unless account is the empty-string-named default account; it behaves like the *sendtoaddress* method). Returns transaction ID on success.
+Sends amount from account's balance to 'bitcoinaddress'. This method will fail if there is less than amount bitcoins with ['minconf'] confirmations in the account's balance (unless account is the empty-string-named default account; it behaves like the *sendtoaddress* method). Returns transaction ID on success.
 .TP     
 \fBsendtoaddress 'bitcoinaddress' 'amount' ['comment'] ['comment-to']\fR
 Sends amount from the server's available balance to 'bitcoinaddress'. amount is a real and is rounded to the nearest 0.01. Returns transaction id on success.
