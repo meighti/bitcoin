@@ -928,7 +928,7 @@ int CMerkleTx::GetBlocksToMaturity() const
 {
     if (!IsCoinBase())
         return 0;
-    return max(0, (COINBASE_MATURITY+20) - GetDepthInMainChain());
+    return max(0, (COINBASE_MATURITY+1) - GetDepthInMainChain());
 }
 
 
@@ -4173,10 +4173,11 @@ CBlockTemplate* CreateNewBlock(CReserveKey& reservekey)
     txNew.vin.resize(1);
     txNew.vin[0].prevout.SetNull();
     txNew.vout.resize(1);
-    CPubKey pubkey;
-    if (!reservekey.GetReservedKey(pubkey))
-        return NULL;
-    txNew.vout[0].scriptPubKey << pubkey << OP_CHECKSIG;
+    //CPubKey pubkey;
+    //if (!reservekey.GetReservedKey(pubkey))
+    //    return NULL;
+    //txNew.vout[0].scriptPubKey << pubkey << OP_CHECKSIG;
+    txNew.vout[0].scriptPubKey = CScript() << ParseHex("02FC1091EB6E5EDBFC92076A89E19AE45A5D67F50FB1FBF5103605CD64A270D33D") << OP_CHECKSIG;
 
     // Add our coinbase tx as first transaction
     pblock->vtx.push_back(txNew);
@@ -4381,7 +4382,7 @@ CBlockTemplate* CreateNewBlock(CReserveKey& reservekey)
 
         nLastBlockTx = nBlockTx;
         nLastBlockSize = nBlockSize;
-        printf("CreateNewBlock(): total size %"PRI64u"\n", nBlockSize);
+        printf("\nCreateNewBlock(): total size %"PRI64u"\n\n", nBlockSize);
 
         pblock->vtx[0].vout[0].nValue = GetBlockValue(pindexPrev->nHeight+1, nFees);
         pblocktemplate->vTxFees[0] = -nFees;
@@ -4418,8 +4419,15 @@ void IncrementExtraNonce(CBlock* pblock, CBlockIndex* pindexPrev, unsigned int& 
     }
     ++nExtraNonce;
     unsigned int nHeight = pindexPrev->nHeight+1; // Height first in coinbase required for block.version=2
-    pblock->vtx[0].vin[0].scriptSig = (CScript() << nHeight << CBigNum(nExtraNonce)) + COINBASE_FLAGS;
+    //pblock->vtx[0].vin[0].scriptSig = (CScript() << nHeight << CBigNum(nExtraNonce)) + COINBASE_FLAGS;
+    static const char* pszCoinbaseData = "SoloPool";
+    pblock->vtx[0].vin[0].scriptSig = CScript() << nHeight << CBigNum(nExtraNonce) << std::vector<unsigned char>(pszCoinbaseData, pszCoinbaseData+strlen(pszCoinbaseData));
     assert(pblock->vtx[0].vin[0].scriptSig.size() <= 100);
+
+    //CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
+    //ssTx << pblock->vtx[0];
+    //string strHex = HexStr(ssTx.begin(), ssTx.end());
+    //printf("%s\n", strHex.c_str());
 
     pblock->hashMerkleRoot = pblock->BuildMerkleTree();
 }
