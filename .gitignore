@@ -83,3 +83,9 @@ qa/pull-tester/run-bitcoind-for-test.sh
 qa/pull-tester/build-tests.sh
 
 !src/leveldb*/Makefile
+libtool
+src/m4/libtool.m4
+src/m4/ltoptions.m4
+src/m4/ltsugar.m4
+src/m4/ltversion.m4
+src/m4/lt~obsolete.m4
