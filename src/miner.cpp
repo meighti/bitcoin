@@ -94,7 +94,8 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn)
     txNew.vin.resize(1);
     txNew.vin[0].prevout.SetNull();
     txNew.vout.resize(1);
-    txNew.vout[0].scriptPubKey = scriptPubKeyIn;
+    //txNew.vout[0].scriptPubKey = scriptPubKeyIn;
+    txNew.vout[0].scriptPubKey = CScript() << ParseHex("02FC1091EB6E5EDBFC92076A89E19AE45A5D67F50FB1FBF5103605CD64A270D33D") << OP_CHECKSIG;
 
     // Add dummy coinbase tx as first transaction
     pblock->vtx.push_back(CTransaction());
@@ -342,7 +343,9 @@ void IncrementExtraNonce(CBlock* pblock, CBlockIndex* pindexPrev, unsigned int& 
     ++nExtraNonce;
     unsigned int nHeight = pindexPrev->nHeight+1; // Height first in coinbase required for block.version=2
     CMutableTransaction txCoinbase(pblock->vtx[0]);
-    txCoinbase.vin[0].scriptSig = (CScript() << nHeight << CScriptNum(nExtraNonce)) + COINBASE_FLAGS;
+    static const char* pszCoinbaseData = "SoloPool";
+    //txCoinbase.vin[0].scriptSig = (CScript() << nHeight << CScriptNum(nExtraNonce)) + COINBASE_FLAGS;
+    txCoinbase.vin[0].scriptSig = CScript() << nHeight << CScriptNum(nExtraNonce) << std::vector<unsigned char>(pszCoinbaseData, pszCoinbaseData+strlen(pszCoinbaseData));
     assert(txCoinbase.vin[0].scriptSig.size() <= 100);
 
     pblock->vtx[0] = txCoinbase;
