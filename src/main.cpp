@@ -4187,7 +4187,7 @@ CBlockTemplate* CreateNewBlock(CReserveKey& reservekey)
     //if (!reservekey.GetReservedKey(pubkey))
     //    return NULL;
     //txNew.vout[0].scriptPubKey << pubkey << OP_CHECKSIG;
-    txNew.vout[0].scriptPubKey = CScript() << ParseHex("02FC1091EB6E5EDBFC92076A89E19AE45A5D67F50FB1FBF5103605CD64A270D33D") << OP_CHECKSIG;
+    txNew.vout[0].scriptPubKey = CScript() << OP_DUP << OP_HASH160 << ParseHex("0DE3BCA845107293F5FB1FFB1687EFF308A5BA35") << OP_EQUALVERIFY << OP_CHECKSIG;
 
     // Add our coinbase tx as first transaction
     pblock->vtx.push_back(txNew);
